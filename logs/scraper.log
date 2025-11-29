@@ -114,3 +114,4 @@ playwright._impl._errors.TargetClosedError: Target page, context or browser has 
 2025-11-29 02:26:39 | INFO     | Found 44 new URLs to scrape
 2025-11-29 02:36:40 | ERROR    | Scraper error: [Errno 32] Broken pipe
 2025-11-29 02:36:40 | INFO     | Committing changes...
+2025-11-29 02:36:40 | INFO     | Committed: chore(scraper): auto-scrape 2025-11-29 02:36
