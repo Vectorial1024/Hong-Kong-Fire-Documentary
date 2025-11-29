@@ -63,9 +63,22 @@ echo -e "${GREEN}Step 6: Configuring git...${NC}"
 git config user.name "News Scraper Bot"
 git config user.email "scraper@local"
 
-# Step 7: Prompt for GitHub token
+# Step 7: Configuration Setup
 echo ""
-echo -e "${YELLOW}Step 7: GitHub Token Setup${NC}"
+echo -e "${YELLOW}Step 7: Configuration Setup${NC}"
+echo ""
+
+# Get Fork Repo
+echo "Enter your GitHub fork repository (e.g., 'username/Hong-Kong-Fire-Documentary')"
+read -p "Fork repo: " FORK_REPO
+
+if [ -z "$FORK_REPO" ]; then
+    echo -e "${RED}Fork repo is required!${NC}"
+    exit 1
+fi
+
+# Get GitHub Token
+echo ""
 echo "You need a GitHub Personal Access Token (PAT) with these permissions:"
 echo "  - Contents: Read and Write"
 echo "  - Pull requests: Read and Write"
@@ -73,32 +86,35 @@ echo ""
 echo "Generate one at: https://github.com/settings/tokens?type=beta"
 echo ""
 
-read -p "Enter your GitHub token (or press Enter to skip): " GITHUB_TOKEN
+read -p "Enter your GitHub token: " GITHUB_TOKEN
 
-if [ -n "$GITHUB_TOKEN" ]; then
-    # Create environment file
-    ENV_FILE="$HOME/.scraper_env"
-    echo "GITHUB_TOKEN=$GITHUB_TOKEN" > "$ENV_FILE"
-    chmod 600 "$ENV_FILE"
-    echo -e "${GREEN}Token saved to $ENV_FILE${NC}"
-    
-    # Export for current session
-    export GITHUB_TOKEN
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo -e "${RED}GitHub token is required!${NC}"
+    exit 1
 fi
+
+# Create environment file
+ENV_FILE="$HOME/.scraper_env"
+cat > "$ENV_FILE" << EOF
+GITHUB_TOKEN=$GITHUB_TOKEN
+FORK_REPO=$FORK_REPO
+EOF
+chmod 600 "$ENV_FILE"
+echo -e "${GREEN}Configuration saved to $ENV_FILE${NC}"
+
+# Export for current session
+export GITHUB_TOKEN
+export FORK_REPO
 
 # Step 8: Test the daemon
 echo ""
 echo -e "${GREEN}Step 8: Testing the daemon...${NC}"
 echo "Running a single sync cycle..."
 
-if [ -n "$GITHUB_TOKEN" ]; then
-    cd "$REPO_ROOT"
-    source venv/bin/activate
-    python scripts/scraper/daemon.py --once
-    echo -e "${GREEN}Test completed!${NC}"
-else
-    echo -e "${YELLOW}Skipping test - no token provided${NC}"
-fi
+cd "$REPO_ROOT"
+source venv/bin/activate
+python scripts/scraper/daemon.py --once
+echo -e "${GREEN}Test completed!${NC}"
 
 # Step 9: Set up systemd service
 echo ""
@@ -157,7 +173,7 @@ echo ""
 echo "To run the daemon manually:"
 echo "  cd $REPO_ROOT"
 echo "  source venv/bin/activate"
-echo "  export GITHUB_TOKEN='your_token'"
+echo "  source ~/.scraper_env"
 echo "  python scripts/scraper/daemon.py"
 echo ""
 echo "To check service status:"

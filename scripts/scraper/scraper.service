@@ -25,11 +25,11 @@ Group=YOUR_USERNAME
 # Set the working directory to the repo root
 WorkingDirectory=/home/YOUR_USERNAME/Hong-Kong-Fire-Documentary
 
-# Set environment variable for GitHub token
-Environment="GITHUB_TOKEN=your_token_here"
-
-# Or use an environment file (more secure)
-# EnvironmentFile=/home/YOUR_USERNAME/.scraper_env
+# Load environment variables from file (recommended - more secure)
+# This file should contain:
+#   GITHUB_TOKEN=your_token_here
+#   FORK_REPO=username/repo-name
+EnvironmentFile=/home/YOUR_USERNAME/.scraper_env
 
 # Run the daemon
 ExecStart=/usr/bin/python3 /home/YOUR_USERNAME/Hong-Kong-Fire-Documentary/scripts/scraper/daemon.py

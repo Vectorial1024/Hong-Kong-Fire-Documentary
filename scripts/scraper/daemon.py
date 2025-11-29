@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 """
 News Scraper Daemon for Hong Kong Fire Documentary
-Runs 24/7 on Ubuntu machine, syncs with upstream, scrapes URLs, creates PRs.
+Runs 24/7 on a machine, syncs with upstream, scrapes URLs, creates PRs.
 
 Environment Variables Required:
     GITHUB_TOKEN - Personal Access Token with repo and PR permissions
+    FORK_REPO    - Your fork's repo path (e.g., 'username/repo-name')
+
+Optional Environment Variables:
+    UPSTREAM_REPO - Upstream repo (default: Hong-Kong-Emergency-Coordination-Hub/...)
+    PR_BRANCH     - Branch for PRs (default: scraper-updates)
+    MAIN_BRANCH   - Main branch name (default: main)
     
 Usage:
-    python daemon.py              # Run daemon
-    python daemon.py --once       # Run once and exit (for testing)
+    python daemon.py              # Run daemon (runs forever)
+    python daemon.py --once       # Run one cycle and exit (for testing)
 """
 
 import argparse
@@ -28,13 +34,15 @@ PROJECT_ROOT = SCRIPT_DIR.parent.parent
 LOGS_DIR = PROJECT_ROOT / "logs"
 LOG_FILE = LOGS_DIR / "scraper.log"
 
-# GitHub configuration
-UPSTREAM_REPO = "Hong-Kong-Emergency-Coordination-Hub/Hong-Kong-Fire-Documentary"
-FORK_REPO = "Hilo-Hilo/Hong-Kong-Fire-Documentary"
+# GitHub configuration - set via environment variables or defaults
+UPSTREAM_REPO = os.environ.get(
+    "UPSTREAM_REPO",
+    "Hong-Kong-Emergency-Coordination-Hub/Hong-Kong-Fire-Documentary"
+)
+FORK_REPO = os.environ.get("FORK_REPO", "")  # Required - no default
 UPSTREAM_URL = f"https://github.com/{UPSTREAM_REPO}.git"
-FORK_URL = f"https://github.com/{FORK_REPO}.git"
-PR_BRANCH = "scraper-updates"
-MAIN_BRANCH = "main"
+PR_BRANCH = os.environ.get("PR_BRANCH", "scraper-updates")
+MAIN_BRANCH = os.environ.get("MAIN_BRANCH", "main")
 
 # Timing configuration
 SYNC_INTERVAL_MINUTES = 10
@@ -97,6 +105,20 @@ def get_github_token() -> str:
     return token
 
 
+def get_fork_repo() -> str:
+    """Get fork repo from environment variable"""
+    if not FORK_REPO:
+        logging.error("FORK_REPO environment variable not set!")
+        logging.error("Please set it: export FORK_REPO='username/repo-name'")
+        sys.exit(1)
+    return FORK_REPO
+
+
+def get_fork_owner() -> str:
+    """Get the owner/username from FORK_REPO"""
+    return get_fork_repo().split("/")[0]
+
+
 def setup_git_remotes():
     """Ensure git remotes are configured correctly"""
     logging.info("Setting up git remotes...")
@@ -111,7 +133,8 @@ def setup_git_remotes():
     
     # Ensure origin points to fork
     token = get_github_token()
-    fork_url_with_token = f"https://{token}@github.com/{FORK_REPO}.git"
+    fork_repo = get_fork_repo()
+    fork_url_with_token = f"https://{token}@github.com/{fork_repo}.git"
     run_cmd(["git", "remote", "set-url", "origin", fork_url_with_token])
     logging.info("Configured origin remote with authentication")
 
@@ -228,6 +251,7 @@ def commit_changes() -> bool:
 def get_open_pr() -> dict | None:
     """Check if there's an existing open PR from the scraper branch"""
     token = get_github_token()
+    fork_owner = get_fork_owner()
     
     url = f"https://api.github.com/repos/{UPSTREAM_REPO}/pulls"
     headers = {
@@ -235,7 +259,7 @@ def get_open_pr() -> dict | None:
         "Accept": "application/vnd.github.v3+json"
     }
     params = {
-        "head": f"Hilo-Hilo:{PR_BRANCH}",
+        "head": f"{fork_owner}:{PR_BRANCH}",
         "state": "open"
     }
     
@@ -310,6 +334,7 @@ def push_to_pr_branch() -> bool:
 def create_pr() -> bool:
     """Create a new PR to upstream"""
     token = get_github_token()
+    fork_owner = get_fork_owner()
     
     url = f"https://api.github.com/repos/{UPSTREAM_REPO}/pulls"
     headers = {
@@ -330,7 +355,7 @@ def create_pr() -> bool:
     
     data = {
         "title": f"[Auto-Scraper] News archives update - {timestamp}",
-        "head": f"Hilo-Hilo:{PR_BRANCH}",
+        "head": f"{fork_owner}:{PR_BRANCH}",
         "base": MAIN_BRANCH,
         "body": f"""## Automated News Archive Update
 
@@ -415,14 +440,15 @@ def run_daemon(run_once: bool = False):
     
     logging.info("=" * 60)
     logging.info("News Scraper Daemon Starting")
-    logging.info(f"Fork: {FORK_REPO}")
+    logging.info(f"Fork: {get_fork_repo()}")
     logging.info(f"Upstream: {UPSTREAM_REPO}")
     logging.info(f"Sync interval: {SYNC_INTERVAL_MINUTES} minutes")
     logging.info(f"PR interval: {PR_INTERVAL_MINUTES} minutes")
     logging.info("=" * 60)
     
-    # Verify token
+    # Verify token and fork repo
     get_github_token()
+    get_fork_repo()
     
     # Setup git remotes
     setup_git_remotes()
