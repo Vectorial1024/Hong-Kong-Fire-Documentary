@@ -14,7 +14,7 @@ This file lists all collected on-site video footage with complete metadata.
 
 **Translation**: "It only took 10 minutes for the fire to spread like this from when it just started. Tai Po friends, please help share. The fire department has been notified. Don't get too close if there's nothing wrong. #TaiPoWangFukCourt"
 
-**Post URL**: https://www.threads.com/@striking_biking/post/DRgr4zOgdp7
+**Post URL**: <https://www.threads.com/@striking_biking/post/DRgr4zOgdp7>
 
 **Post Time**: 2025-11-26 15:07:35 (HKT)
 
@@ -72,4 +72,3 @@ This file lists all collected on-site video footage with complete metadata.
 ## Aftermath Documentation
 
 *(To be added)*
-

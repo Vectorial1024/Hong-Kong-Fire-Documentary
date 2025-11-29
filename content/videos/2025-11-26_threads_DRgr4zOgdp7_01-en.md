@@ -7,7 +7,7 @@
 
 ## Source Information
 
-- **Original URL**: https://www.threads.com/@striking_biking/post/DRgr4zOgdp7
+- **Original URL**: <https://www.threads.com/@striking_biking/post/DRgr4zOgdp7>
 - **Source Platform**: Threads
 - **Publisher**: @striking_biking
 - **Post Date**: 2025-11-26 15:07:35 (HKT)
@@ -34,4 +34,3 @@ Ground-level shot with trees in foreground, showing flames and smoke behind gree
 ## Notes
 
 This post contains 4 videos, this is video 1.
-

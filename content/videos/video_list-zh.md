@@ -12,7 +12,7 @@
 
 **貼文原文**: "由啱啱起火都燒成咁只係10分鐘內嘅事,有冇大埔友幫手share出去,已報消防,冇咩事唔好靠近 #大埔宏福苑"
 
-**貼文連結**: https://www.threads.com/@striking_biking/post/DRgr4zOgdp7
+**貼文連結**: <https://www.threads.com/@striking_biking/post/DRgr4zOgdp7>
 
 **貼文時間**: 2025-11-26 15:07:35 (HKT)
 
@@ -70,4 +70,3 @@
 ## 後續紀錄 (Aftermath Documentation)
 
 *(待補充)*
-

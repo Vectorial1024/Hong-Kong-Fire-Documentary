@@ -7,7 +7,7 @@
 
 ## 來源資料
 
-- **原始網址**: https://www.threads.com/@striking_biking/post/DRgr4zOgdp7
+- **原始網址**: <https://www.threads.com/@striking_biking/post/DRgr4zOgdp7>
 - **來源平台**: Threads
 - **發布者**: @striking_biking
 - **貼文日期**: 2025-11-26 15:07:35 (HKT)
@@ -34,4 +34,3 @@
 ## 備註
 
 此貼文包含 4 段影片，此為第 1 段。
-
