@@ -199,3 +199,4 @@ Aborting
 2025-11-29 03:42:29 | INFO     | Found 9 new URLs to scrape
 2025-11-29 04:09:24 | INFO     | Scraper results: 5 success, 4 failed
 2025-11-29 04:09:24 | INFO     | Committing changes...
+2025-11-29 04:09:24 | INFO     | Committed: chore(scraper): auto-scrape 2025-11-29 04:09
